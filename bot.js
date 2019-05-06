@@ -2,24 +2,28 @@ const tmi = require('tmi.js');
 const request = require('request');
 const fs = require('fs');
 
+var _config = require('./config.json');
+var _pointsFile = require('./points.json');
+var _chatters = [];
+var _myId, _target;
+var _myAuthHeader = {'Client-ID': _config['client-id']};
+var _streamerName = _config['streamer-name'];
+var _pointsName = _config['points']['name'];
+var _pointsInterval = _config['points']['interval'];
+
 // Define configuration options
 const opts = {
   identity: {
-    username: '',
-    password: 'oauth:'
+    username: _config['bot-name'],
+    password: _config['password']
   },
   channels: [
-    ''
+    _config['channel']
   ]
 };
 
-var _pointsFile = require('');
-var _chatters = [];
-var _myId = '';
-var _myAuthHeader = {'Client-ID': ''};
-var _target = '';
-
-setInterval(updatePoints, 300000);
+getMyId(setMyId);
+setInterval(updatePoints, parseInt(_pointsInterval) * 60 * 1000);
 
 // Create a client with our options
 const client = new tmi.client(opts);
@@ -53,23 +57,23 @@ function onMessageHandler (target, context, msg, self) {
     args[i-1] = parts[i];
   }
 
-  // If the command is known, let's execute it
+  // checks commandName against all defined commands
   switch(commandName) {
     case '!dice':
       const num = calculateRoll(context, args);
       client.say(target, `You rolled a ${num}`);
       break
     case '!wag':
-      client.say(target, 'Join Wag! for all your dog walking needs! With this link, you get $25 in credit, and you support me with a FAT referral bonus! https://wagwalking.app.link/uyxnZKJCKT');
+      client.say(target, `Join Wag! for all your dog walking needs! With this link, you get $25 in credit, and you support Joe with a FAT referral bonus! https://wagwalking.app.link/uyxnZKJCKT`);
       break
     case '!rigged':
       client.say(target, 'TheIlluminati The dice are rigged. Try adding the "cheat" argument to your dice roll to even the odds. TheIlluminati');
       break
-    case '!points':
-      client.say(target, `${context['display-name']} you have ${_pointsFile[context['user-id']]['points']} points`);
+    case `!${_pointsName}s`:
+      client.say(target, `${context['display-name']} you have ${_pointsFile[context['user-id']]['points']} ${_pointsName}s`);
       break
     case '!system':
-      client.say(target, 'You get 1 point every 5 minutes for watching. If you type in chat within that time you get 1 additional point PogChamp');
+      client.say(target, `You get 1 ${_pointsName} every ${_pointsInterval} minutes for watching. If you type in chat within that time you get 1 additional ${_pointsName} PogChamp`);
       break
     case '!followage':
       checkFollower(context, followage);
@@ -82,6 +86,38 @@ function onMessageHandler (target, context, msg, self) {
   }
   console.log(`* Executed ${commandName} command`);
 }
+
+// function called when bot starts to set _myId global variable
+// the first time the bot runs it will query the api to find this value
+// then it will save it for the future in the config.json file
+// because we are making an api call this function needs to be asynchronous
+function getMyId(callback) {
+  if (_config['channel-id']) {
+    callback(_config['channel-id']);
+  } else {
+    var options = {
+      url: `https://api.twitch.tv/helix/users?login=${_config['channel']}`,
+      headers: _myAuthHeader
+    }
+    request(options, function(err, res, body) {
+      console.log('error:', err);
+      console.log('statusCode:', res && res.statusCode);
+      var bodyObj = JSON.parse(body); 
+      _config['channel-id'] = bodyObj['data'][0]['id'];
+      fs.writeFile('./config.json', JSON.stringify(_config, null, 2), (err) => {
+        if (err) return console.log(err);
+      });
+      callback(_config['channel-id']);
+    });
+  }
+}
+
+// callback function used in getMyId function
+// just sets the _myId global variable after we find it
+function setMyId(value) {
+  _myId = value;
+}
+
 
 // Function called when the "dice" command is issued
 function calculateRoll(context, args) {
@@ -127,7 +163,7 @@ function getRandomInt(min, max) {
 }
 
 function updatePoints() {
-  request('https://tmi.twitch.tv/group/user/xxxxx/chatters', function (err, res, body) {
+  request(`https://tmi.twitch.tv/group/user/${_config['channel']}/chatters`, function (err, res, body) {
     var bodyObj = JSON.parse(body);
     var usernames = [];
     for (var chatterType in bodyObj.chatters) {
@@ -150,7 +186,7 @@ function addPointsToIds(ids) {
   }
   // reset list of active chatters
   _chatters = [];
-  fs.writeFile('', JSON.stringify(_pointsFile, null, 2), (err) => {
+  fs.writeFile('./points.json', JSON.stringify(_pointsFile, null, 2), (err) => {
     if (err) return console.log(err);
   });
 }
@@ -195,9 +231,9 @@ function uptime(startTime) {
     var start = new Date(startTime);
     var uptime = Math.abs(start.getTime() - now.getTime());
     var prettyUptime = getTimeDifferencePretty(uptime);
-    client.say(_target, `Joe has been live for ${prettyUptime}`);  
+    client.say(_target, `${_streamerName} has been live for ${prettyUptime}`);  
   } else {
-    client.say(_target, 'The stream is not live. You can follow to receive notifications when Joe goes live.');
+    client.say(_target, `The stream is not live. You can follow to receive notifications when ${_streamerName} goes live.`);
   }
 }
 

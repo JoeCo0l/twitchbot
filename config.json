@@ -1,13 +1,12 @@
 {
-	"bot-name": "<your bot's twitch username here, all lowercase>",
-	"password": "oauth:<oauth token for your bot's twitch account>",
-	"channel": "<twitch username of channel whose chat bot will work in, all lowercase>",
-	// this is the user id of your channel
-	// it will be saved automatically the first time the bot runs, so leave this blank
-	"channel-id": "", 
-	// you need to register your app with twitch to get this client ID
-	// this is used to authenticate your calls to the twitch API
-	// see readme for more detailed instructions
-	"client-id": "<your app's client id for querying the twitch API>",
-	"points-file-path": "<absolute path to the points.json file>"
+  "bot-name": "<your bot's twitch username here, all lowercase>",
+  "password": "oauth:<oauth token for your bot's twitch account>",
+  "channel": "<twitch username of channel whose chat bot will work in, all lowercase>",
+  "streamer-name": "<name used to refer to the streamer, can be different than username>",
+  "channel-id": "", 
+  "client-id": "<your app's client id for querying the twitch API>",
+  "points": {
+    "name": "point",
+    "interval": "5"
+  }
 }
