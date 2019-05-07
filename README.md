@@ -9,9 +9,12 @@ Running "npm install" installs the dependencies from package.json, including tmi
 Once you've successfully run "npm install" all you need to do to get your bot up and running is fill in variable settings in config.json.
 Our bot.js reads all user-specific info from config.json, and thus does not need to modified.
 Note: replace the <> characters from the string, so it looks like this:
-  "bot-name": "coolbot",
+ 
+ "bot-name": "coolbot",
+
 To procede you will need to create a new Twitch account for your bot.
 You can use the same email address as your main account if you go to settings > Security and Privacy and select "Enable additional account creation"
+
 "bot-name": your newly created bot account's twitch username, all lowercase 
 
 "password": this is an oauth token for you bot account. 
@@ -32,11 +35,13 @@ For "Name" you can put whatever your bot's name is.
 Once you've created your application it should be listed under your "applications" tab. Click "manage" and claim your "Client ID"
 
 "points":
+ 
  "name": the name of your channel's currency, default is "point"
  This also defines the command name for users to check their points, 
  so if it's value is "chinchilla", "!chinchillas" will give users how many chinchillas they have
  Note: the bot assumes to pluralize this word by adding an "s", so if you want your currency to not add an "s",
  you'll have to manually remove the "s" after "${_pointsName}" from bot.js line 72, 73
+ 
  "interval": How often, in minutes, you want the bot to award points, defaults to 5, must be an integer or no one will ever get points
  
 Once you've filled in all the values in config.json, you can run your bot by running "node bot.js" from the project directory
