@@ -42,6 +42,6 @@ Once you've created your application it should be listed under your "application
  Note: the bot assumes to pluralize this word by adding an "s", so if you want your currency to not add an "s",
  you'll have to manually remove the "s" after "${_pointsName}" from bot.js line 72, 73
  
- "interval": How often, in minutes, you want the bot to award points, defaults to 5, must be an integer or no one will ever get points
+ "interval": How often, in minutes, you want the bot to award points, defaults to 5, must be an integer or the application will break
  
 Once you've filled in all the values in config.json, you can run your bot by running "node bot.js" from the project directory
