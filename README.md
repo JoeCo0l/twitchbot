@@ -1,5 +1,5 @@
 # twitchbot
-A twitch both with basic commands to enhance the user experience of viewers of my channel
+A twitch both with basic commands to enhance the user experience of viewers of my channel.
 My bot is adapted from this chat bot tutorial from Twitch https://dev.twitch.tv/docs/irc/
 
 You can install the project dependencies by running "npm install" from the project directory.
@@ -40,7 +40,7 @@ Once you've created your application it should be listed under your "application
  This also defines the command name for users to check their points, 
  so if it's value is "chinchilla", "!chinchillas" will give users how many chinchillas they have
  Note: the bot assumes to pluralize this word by adding an "s", so if you want your currency to not add an "s",
- you'll have to manually remove the "s" after "${_pointsName}" from bot.js line 72, 73
+ you'll have to manually remove the "s" after "${_pointsName}" from bot.js line 71, 72
  
  "interval": How often, in minutes, you want the bot to award points, defaults to 5, must be an integer or the application will break
  
