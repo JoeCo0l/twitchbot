@@ -69,7 +69,11 @@ function onMessageHandler (target, context, msg, self) {
       client.say(target, 'TheIlluminati The dice are rigged. Try adding the "cheat" argument to your dice roll to even the odds. TheIlluminati');
       break
     case `!${_pointsName}s`:
-      client.say(target, `${context['display-name']} you have ${_pointsFile[context['user-id']]['points']} ${_pointsName}s`);
+      let numpoints = 0;
+      if (context['user-id'] in _pointsFile) {
+        numpoints = _pointsFile[context['user-id']]['points'];
+      }
+      _client.say(target, `${context['display-name']} you have ${numpoints} ${_pointsName}s`);
       break
     case '!system':
       client.say(target, `You get 1 ${_pointsName} every ${_pointsInterval} minutes for watching. If you type in chat within that time you get 1 additional ${_pointsName} PogChamp`);
@@ -79,6 +83,9 @@ function onMessageHandler (target, context, msg, self) {
       break
     case '!uptime':
       getStartTime(uptime);
+      break
+    case '!github':
+      _client.say(target, `Check out code for my chat bot MrDestructoid and maybe some other stuff: ${_githubLink}`);
       break
     default:
       console.log(`* Unknown command ${commandName}`);
