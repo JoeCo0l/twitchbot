@@ -2,16 +2,23 @@ const tmi = require('tmi.js');
 const request = require('request');
 const fs = require('fs');
 
-const _config = require('./config.json');
+const { getOAuthData } = require('./authorise');
+
+let _config
+try {
+  _config = require('./config_private.json');
+} catch (e) {
+  _config = require('./config.json');
+}
+
 const _pointsFile = require('./points.json');
 
 const _chatters = [];
-const _myAuthHeader = {'Client-ID': _config['client-id']};
 const _streamerName = _config['streamer-name'];
 const _pointsName = _config['points']['name'];
 const _pointsInterval = _config['points']['interval'];
 // these variables are both assigned later, but I want them in the global scope
-let _myId, _target; 
+let _myId, _target, _myAuthHeader, client; 
 
 // Define configuration options
 const opts = {
@@ -24,18 +31,31 @@ const opts = {
   ]
 };
 
-getMyId(setMyId);
-setInterval(updatePoints, parseInt(_pointsInterval) * 60 * 1000);
+getOAuthData(_config)
+.then(clientOAuthData => {
+  if(!clientOAuthData) {
+    console.log('something went wrong')
+    return
+  }
 
-// Create a client with our options
-const client = new tmi.client(opts);
+  _myAuthHeader = {
+    'Client-ID': _config['client-id'],
+    'Authorization': 'Bearer '+clientOAuthData.access_token
+  };
 
-// Register our event handlers (defined below)
-client.on('message', onMessageHandler);
-client.on('connected', onConnectedHandler);
+  getMyId(setMyId);
+  setInterval(updatePoints, parseInt(_pointsInterval) * 60 * 1000);
 
-// Connect to Twitch:
-client.connect();
+  // Create a client with our options
+  client = new tmi.client(opts);
+
+  // Register our event handlers (defined below)
+  client.on('message', onMessageHandler);
+  client.on('connected', onConnectedHandler);
+
+  // Connect to Twitch:
+  client.connect();
+})
 
 // Called every time a message comes in
 function onMessageHandler (target, context, msg, self) {
@@ -73,7 +93,7 @@ function onMessageHandler (target, context, msg, self) {
       if (context['user-id'] in _pointsFile) {
         numpoints = _pointsFile[context['user-id']]['points'];
       }
-      _client.say(target, `${context['display-name']} you have ${numpoints} ${_pointsName}s`);
+      client.say(target, `${context['display-name']} you have ${numpoints} ${_pointsName}s`);
       break
     case '!system':
       client.say(target, `You get 1 ${_pointsName} every ${_pointsInterval} minutes for watching. If you type in chat within that time you get 1 additional ${_pointsName} PogChamp`);
@@ -85,7 +105,7 @@ function onMessageHandler (target, context, msg, self) {
       getStartTime(uptime);
       break
     case '!github':
-      _client.say(target, `Check out code for my chat bot MrDestructoid and maybe some other stuff: ${_githubLink}`);
+      client.say(target, `Check out code for my chat bot MrDestructoid and maybe some other stuff: ${_githubLink}`);
       break
     default:
       console.log(`* Unknown command ${commandName}`);
