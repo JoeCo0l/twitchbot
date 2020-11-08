@@ -2,7 +2,7 @@
   "name": "coolbot",
   "version": "1.0.0",
   "description": "Basic Twitch chat bot with points system",
-  "main": "bott.js",
+  "main": "bot.js",
   "dependencies": {
     "request": "^2.88.0",
     "tmi.js": "^1.3.1"
