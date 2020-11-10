@@ -1,5 +1,5 @@
 # twitchbot
-A twitch both with basic commands to enhance the user experience of viewers of my channel.
+A twitch bot with basic commands to enhance the user experience of viewers of my channel.
 My bot is adapted from this chat bot tutorial from Twitch https://dev.twitch.tv/docs/irc/
 
 You can install the project dependencies by running "npm install" from the project directory.
