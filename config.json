@@ -5,9 +5,10 @@
   "streamer-name": "<name used to refer to the streamer, can be different than username>",
   "channel-id": "", 
   "client-id": "<your app's client id for querying the twitch API>",
+  "client-secret": "<your app's client secret>",
   "points": {
     "name": "point",
     "interval": "5"
   },
   "github-link": "https://github.com/JoeCo0l"
-}
+} 
