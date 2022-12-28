@@ -17,7 +17,7 @@ You can use the same email address as your main account if you go to settings > 
 
 "bot-name": your newly created bot account's twitch username, all lowercase 
 
-"password": this is an oauth token for you bot account. 
+"password": this is an oauth token for your bot account. 
 Go to https://twitchapps.com/tmi/ while logged into your chatbot account to generate this token
 
 "channel": the twitch username of your channel where you want the chatbot to work, all lowercase
